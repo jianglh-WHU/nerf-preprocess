@@ -15,16 +15,16 @@ def parse_args():
     #                     default='china_museum')
     parser.add_argument("--input_path",
                         type=str,
-                        default='jinmao')
+                        default='china_museum')
     parser.add_argument("--input_transforms",
                         type=str,
-                        default='jinmao.json')
+                        default='china_museum.json')
 
     parser.add_argument("--downsample", type=int, default=5)
     
     # parser.add_argument("--scale", type=int, default=100)
     
-    parser.add_argument("--orientation_method", type=str, default='none',
+    parser.add_argument("--orientation_method", type=str, default='pca',
                         choices=["pca", "up", "vertical", "none"],
                         help='The method to use for orientation')
     
@@ -165,7 +165,8 @@ if __name__ == "__main__":
 
     import pdb; pdb.set_trace()
     # Scale poses
-    scale_factor = 1.0
+    # scale_factor = 1.0
+    scale_factor = 0.67
     if args.auto_scale_poses:
         scale_factor /= float(torch.max(torch.abs(poses[:, :3, 3]))) 
 
@@ -193,13 +194,13 @@ if __name__ == "__main__":
     val_json = test_json
     
     #TODO: save
-    with open(os.path.join(OUTPUT_PATH, 'transforms.json'),"w") as outfile:
+    with open(os.path.join(OUTPUT_PATH, 'transforms_pca.json'),"w") as outfile:
         json.dump(transforms, outfile, indent=2)
     
-    with open(os.path.join(INPUT_PATH, 'transforms_train.json'),"w") as outfile:
+    with open(os.path.join(INPUT_PATH, 'transforms_train_pca.json'),"w") as outfile:
         json.dump(train_json, outfile, indent=2)
-    with open(os.path.join(INPUT_PATH, 'transforms_test.json'),"w") as outfile:
+    with open(os.path.join(INPUT_PATH, 'transforms_test_pca.json'),"w") as outfile:
         json.dump(test_json, outfile, indent=2)
-    with open(os.path.join(INPUT_PATH, 'transforms_val.json'), "w") as outfile:
+    with open(os.path.join(INPUT_PATH, 'transforms_val_pca.json'), "w") as outfile:
         json.dump(val_json, outfile, indent=2)
         

@@ -5,6 +5,7 @@ import torch
 from numpy.typing import ArrayLike
 from torchtyping import TensorType
 from typing_extensions import Literal
+from typing import Any, Dict, Optional
 
 def auto_orient_and_center_poses(
     poses: TensorType["num_poses":..., 4, 4],
@@ -113,3 +114,4 @@ def auto_orient_and_center_poses(
         raise ValueError(f"Unknown value for method: {method}")
 
     return oriented_poses, transform
+
