@@ -14,10 +14,10 @@ def parse_args():
     #                     default='china_museum')
     parser.add_argument("--input_path",
                         type=str,
-                        default='jinmao')
+                        default='wukang')
     parser.add_argument("--input_transforms",
                         type=str,
-                        default='jinmao.json')
+                        default='wukang_6_qingxie.json')
 
     parser.add_argument("--downsample", type=int, default=5)
     
@@ -39,6 +39,19 @@ def downsample(tasks):
 
     im_resize.save(img_path, quality=90)
 
+def traverse_mkdir_folder(input_path,output_path,downsample,dirname=''):
+    folder_path = os.path.join(input_path,'images',dirname)
+    for filepath,dirnames,filenames in os.walk(folder_path):
+        # import pdb;pdb.set_trace()
+        for dir in dirnames:
+            full_path = os.path.join(input_path,'images',dirname, dir)
+            if os.path.isdir(full_path):
+                os.makedirs(os.path.join(output_path,f"images_{downsample}",dirname,dir),exist_ok=True)
+                dirname_new = os.path.join(dirname, dir)
+                if dirname_new == dirname:
+                    continue
+                traverse_mkdir_folder(input_path,output_path,downsample,dirname_new)
+            
 if __name__ == "__main__":
     args = parse_args()
     
@@ -49,13 +62,22 @@ if __name__ == "__main__":
     
     with open(os.path.join(INPUT_PATH,f"{args.input_transforms}"), "r") as f:
         tj = json.load(f)
-
+    # import pdb;pdb.set_trace()
     os.makedirs(os.path.join(OUTPUT_PATH,f"images_{DOWNSAMPLE}"),exist_ok=True)
 
-    for filename in os.listdir(os.path.join(INPUT_PATH,'images')):
-        full_path = os.path.join(INPUT_PATH,'images', filename)
-        if os.path.isdir(full_path):
-            os.makedirs(os.path.join(OUTPUT_PATH,f"images_{DOWNSAMPLE}",filename),exist_ok=True)
+    keys = tj.keys()
+    traverse_mkdir_folder(INPUT_PATH,OUTPUT_PATH,DOWNSAMPLE)
+    # for filepath,dirnames,filenames in os.walk(os.path.join(INPUT_PATH,'images')):
+    #     import pdb;pdb.set_trace()
+    #     for dir in dirnames:
+    #         full_path = os.path.join(INPUT_PATH,'images', dir)
+    #         if os.path.isdir(full_path):
+    #             os.makedirs(os.path.join(OUTPUT_PATH,f"images_{DOWNSAMPLE}",dir),exist_ok=True)
+    # for filename in os.listdir(os.path.join(INPUT_PATH,'images')):
+    #     full_path = os.path.join(INPUT_PATH,'images', filename)
+    #     if os.path.isdir(full_path):
+    #         os.makedirs(os.path.join(OUTPUT_PATH,f"images_{DOWNSAMPLE}",filename),exist_ok=True)
+    
     
     frame_1 = tj['0']
     rot_mat =np.array(frame_1["rot_mat"])
@@ -63,8 +85,12 @@ if __name__ == "__main__":
     h = rot_mat[0,-1]
     
     tasks=[]
-    for i in range(len(tj)):
-        frame = tj[f'{i}']
+    for key in keys:
+        frame = tj[key]
+        # if "camera" not in frame['path']:
+        #     continue
+        # if "tiejin" in frame['path']:
+        #     continue
         if 'images' in frame['path']:
             file_path = os.path.join(INPUT_PATH,frame['path'])
         else:
