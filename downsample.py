@@ -79,18 +79,25 @@ if __name__ == "__main__":
     #         os.makedirs(os.path.join(OUTPUT_PATH,f"images_{DOWNSAMPLE}",filename),exist_ok=True)
     
     
-    frame_1 = tj['0']
-    rot_mat =np.array(frame_1["rot_mat"])
-    w = rot_mat[1,-1] 
-    h = rot_mat[0,-1]
+    # frame_1 = tj['0']
+    # rot_mat =np.array(frame_1["rot_mat"])
+    # import pdb;pdb.set_trace()
+    # w = rot_mat[1,-1] 
+    # h = rot_mat[0,-1]
     
     tasks=[]
     for key in keys:
         frame = tj[key]
-        # if "camera" not in frame['path']:
+        if "camera" not in frame['path']:
+            continue
+        # if "tiejin" not in frame['path']:
         #     continue
-        # if "tiejin" in frame['path']:
+        # if "huanrao" not in frame['path']:
         #     continue
+        # import pdb;pdb.set_trace()
+        rot_mat =np.array(frame["rot_mat"])
+        w = rot_mat[1,-1] 
+        h = rot_mat[0,-1]
         if 'images' in frame['path']:
             file_path = os.path.join(INPUT_PATH,frame['path'])
         else:

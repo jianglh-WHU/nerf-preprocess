@@ -15,14 +15,14 @@ def parse_args():
     #                     default='china_museum')
     parser.add_argument("--input_path",
                         type=str,
-                        default='sanjiantao')
+                        default='wukang')
     parser.add_argument("--input_transforms",
                         type=str,
-                        default='lujiazui_9.json')
+                        default='wukang_6_qingxie.json')
     
     parser.add_argument("--output_transforms",
                         type=str,
-                        default='transforms_lujiazui_9.json')
+                        default='transforms_tiejin_6_qingxie.json')
     
     parser.add_argument("--same_intri",action='store_true', default=False)
 
@@ -196,7 +196,7 @@ if __name__ == "__main__":
             c2ws.append(c2w)
             
         poses = torch.from_numpy(np.array(c2ws).astype(np.float32))
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         poses[...,:3,3] -=torch.mean(poses[...,:3,3], dim=0)
         # poses, transform_matrix = auto_orient_and_center_poses(
         #     poses, # type: ignore
@@ -208,7 +208,8 @@ if __name__ == "__main__":
         # scale_factor = 0.67
         if args.auto_scale_poses:
             scale_factor /= float(torch.max(torch.abs(poses[:, :3, 3]))) 
-
+        # import pdb;pdb.set_trace()
+        print('scale factor:', scale_factor)
         poses[:, :3, 3] *= scale_factor
         
         c2ws = poses.numpy()
